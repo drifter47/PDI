@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Mahindra PDI Portal</string>
+    <string name="title_activity_main">Mahindra PDI Portal</string>
+    <string name="package_name">com.mahindra.pdiportal</string>
+    <string name="custom_url_scheme">com.mahindra.pdiportal</string>
+</resources>

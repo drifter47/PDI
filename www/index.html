@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mahindra PDI Portal - Yard & Vehicle Inspection Manager</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Main Style -->
+    <link rel="stylesheet" href="style.css?v=3">
+</head>
+<body class="dark-theme">
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="brand-logo">
+                    <!-- Twin Peaks Custom SVG Concept -->
+                    <svg viewBox="0 0 100 60" class="mahindra-peaks">
+                        <path d="M15 50 L35 15 L50 38 L65 15 L85 50 H70 L65 40 L50 60 L35 40 L30 50 Z" fill="#E31837" />
+                    </svg>
+                    <div class="brand-text">
+                        <span class="brand-name">MAHINDRA</span>
+                        <span class="brand-sub">PDI PORTAL</span>
+                    </div>
+                </div>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <a href="#dashboard" class="nav-item active" id="nav-dashboard">
+                    <i class="fa-solid fa-chart-pie"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="#yards" class="nav-item" id="nav-yards">
+                    <i class="fa-solid fa-warehouse"></i>
+                    <span>Yard Visualizer</span>
+                </a>
+                <a href="#inspections" class="nav-item" id="nav-inspections">
+                    <i class="fa-solid fa-clipboard-check"></i>
+                    <span>New Inspection</span>
+                </a>
+                <a href="#vehicles" class="nav-item" id="nav-vehicles">
+                    <i class="fa-solid fa-car"></i>
+                    <span>Vehicle Registry</span>
+                </a>
+                <a href="#checklist" class="nav-item" id="nav-checklist">
+                    <i class="fa-solid fa-list-check"></i>
+                    <span>PDI Checklist</span>
+                </a>
+            </nav>
+            
+            <div class="user-profile">
+                <div class="user-avatar">
+                    <i class="fa-solid fa-user-tie"></i>
+                </div>
+                <div class="user-info">
+                    <span class="user-name">VIVIN RICHARD K</span>
+                    <span class="user-role">PDI In-Charge</span>
+                    <div id="connection-status" class="connection-status-indicator online">
+                        <span class="status-dot"></span> <span class="status-text">Online</span>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <header class="top-bar">
+                <div class="page-title-area">
+                    <h1 id="page-title">Dashboard</h1>
+                    <p id="page-subtitle">Real-time overview of arrivals and PDI statuses</p>
+                </div>
+                <div class="top-bar-actions">
+                    <div class="search-box">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input type="text" id="global-search" placeholder="Search VIN, Model, Status...">
+                    </div>
+                    <button class="btn btn-primary" id="btn-quick-inspect">
+                        <i class="fa-solid fa-plus"></i> New PDI Check
+                    </button>
+                </div>
+            </header>
+
+            <!-- VIEW 1: DASHBOARD -->
+            <section id="view-dashboard" class="content-view active">
+                <!-- Stats Grid -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon pending">
+                            <i class="fa-solid fa-hourglass-half"></i>
+                        </div>
+                        <div class="stat-details">
+                            <h3>Pending PDI</h3>
+                            <span class="stat-number" id="stat-pending">0</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon passed">
+                            <i class="fa-solid fa-circle-check"></i>
+                        </div>
+                        <div class="stat-details">
+                            <h3>PDI Passed</h3>
+                            <span class="stat-number" id="stat-passed">0</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon failed">
+                            <i class="fa-solid fa-triangle-exclamation"></i>
+                        </div>
+                        <div class="stat-details">
+                            <h3>Issues / Failed</h3>
+                            <span class="stat-number" id="stat-failed">0</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon delivered">
+                            <i class="fa-solid fa-truck-fast"></i>
+                        </div>
+                        <div class="stat-details">
+                            <h3>Delivered</h3>
+                            <span class="stat-number" id="stat-delivered">0</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon total">
+                            <i class="fa-solid fa-truck-ramp-box"></i>
+                        </div>
+                        <div class="stat-details">
+                            <h3>Total Arrivals</h3>
+                            <span class="stat-number" id="stat-total">0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Main Dashboard Content -->
+                <div class="dashboard-layout">
+                    <!-- Yard Occupancy Cards -->
+                    <div class="card occupancy-card">
+                        <div class="card-header">
+                            <h2><i class="fa-solid fa-chart-simple"></i> Yard Occupancy Status</h2>
+                        </div>
+                        <div class="yard-summary-list">
+                            <div class="yard-summary-item" data-yard="beach">
+                                <div class="yard-summary-info">
+                                    <span class="yard-name">Beach Yard</span>
+                                    <span class="yard-ratio" id="occupancy-beach-text">0/48 spots</span>
+                                </div>
+                                <div class="progress-bar-container">
+                                    <div class="progress-bar" id="occupancy-beach-bar" style="width: 0%"></div>
+                                </div>
+                            </div>
+                            <div class="yard-summary-item" data-yard="bhima">
+                                <div class="yard-summary-info">
+                                    <span class="yard-name">Bhima Yard</span>
+                                    <span class="yard-ratio" id="occupancy-bhima-text">0/50 spots</span>
+                                </div>
+                                <div class="progress-bar-container">
+                                    <div class="progress-bar" id="occupancy-bhima-bar" style="width: 0%"></div>
+                                </div>
+                            </div>
+                            <div class="yard-summary-item" data-yard="showroom">
+                                <div class="yard-summary-info">
+                                    <span class="yard-name">Showroom Yard</span>
+                                    <span class="yard-ratio" id="occupancy-showroom-text">0/16 spots</span>
+                                </div>
+                                <div class="progress-bar-container">
+                                    <div class="progress-bar" id="occupancy-showroom-bar" style="width: 0%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Arrivals Table -->
+                    <div class="card recent-arrivals-card">
+                        <div class="card-header">
+                            <h2><i class="fa-solid fa-clock-rotate-left"></i> Recent Plant Deliveries</h2>
+                            <button class="btn btn-secondary btn-sm" id="btn-mock-delivery">
+                                <i class="fa-solid fa-truck"></i> Simulate Delivery
+                            </button>
+                        </div>
+                        <div class="table-container">
+                            <table class="data-table" id="table-recent-arrivals">
+                                <thead>
+                                    <tr>
+                                        <th>Model</th>
+                                        <th>VIN Number</th>
+                                        <th>Color</th>
+                                        <th>Yard Location</th>
+                                        <th>PDI Status</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Dynamic rows -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- VIEW 2: YARDS VISUALIZER -->
+            <section id="view-yards" class="content-view">
+                <!-- Yard Switcher & Filters -->
+                <div class="toolbar">
+                    <div class="tab-group" id="yard-tab-switcher">
+                        <button class="tab-btn active" data-yard="beach">
+                            <i class="fa-solid fa-umbrella-beach"></i> Beach Yard (6 &times; 8)
+                        </button>
+                        <button class="tab-btn" data-yard="bhima">
+                            <i class="fa-solid fa-mountain"></i> Bhima Yard (5 &times; 10)
+                        </button>
+                        <button class="tab-btn" data-yard="showroom">
+                            <i class="fa-solid fa-store"></i> Showroom Yard (4 &times; 4)
+                        </button>
+                    </div>
+                    
+                    <div style="display:flex; align-items:center; gap:16px; flex-wrap:wrap;">
+                        <button class="btn btn-secondary btn-sm" id="btn-config-yard-layout" style="border-color:var(--mahindra-red); color:var(--text-primary);">
+                            <i class="fa-solid fa-gears"></i> Configure Layout
+                        </button>
+                        <div class="legend-bar">
+                            <div class="legend-item"><span class="color-dot empty"></span> Empty Bay</div>
+                            <div class="legend-item"><span class="color-dot pending"></span> Pending PDI</div>
+                            <div class="legend-item"><span class="color-dot passed"></span> Passed</div>
+                            <div class="legend-item"><span class="color-dot failed"></span> Failed / Issues</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Visual Grid Board -->
+                <div class="yard-grid-container">
+                    <div class="yard-grid-header">
+                        <h2 id="current-yard-title">Beach Yard</h2>
+                        <div class="yard-meta-info">
+                            <span class="badge" id="current-yard-capacity">Capacity: 48 Bays</span>
+                            <span class="badge badge-success" id="current-yard-occupied">Occupied: 0</span>
+                        </div>
+                    </div>
+                    
+                    <!-- The Grid itself -->
+                    <div class="visual-grid" id="yard-visual-grid">
+                        <!-- Slots generated by JS -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- VIEW 3: INSPECTION FORM -->
+            <section id="view-inspections" class="content-view">
+                <div class="inspection-layout">
+                    <!-- Column 1: Verification & Checklist -->
+                    <div class="inspection-form-column">
+                        <!-- Step 1: VIN Check -->
+                        <div class="card form-step-card">
+                            <div class="card-header">
+                                <span class="step-num">1</span>
+                                <h2>VIN & Document Verification</h2>
+                            </div>
+                            <div class="card-body">
+                                <div class="vin-input-group" style="display: flex; flex-direction: column; gap: 16px;">
+                                    <div class="input-field">
+                                        <label for="inspect-vin">Scan or Enter VIN (17 Characters)</label>
+                                        <div class="input-with-action">
+                                            <input type="text" id="inspect-vin" placeholder="e.g. MA3XXXXXXXXXXXXXXXX" maxlength="17">
+                                            <button class="btn btn-secondary" id="btn-verify-vin">Verify VIN</button>
+                                        </div>
+                                    </div>
+                                    <div class="input-field">
+                                        <label for="inspect-type">Vehicle Model Type</label>
+                                        <select id="inspect-type" disabled style="padding: 12px; background-color: rgba(255, 255, 255, 0.05); border: 1px solid var(--border-color); color: white; border-radius: 8px; outline: none; width: 100%;">
+                                            <option value="petrol">Petrol / Diesel / Hybrid (Standard)</option>
+                                            <option value="electric">Electric Vehicle (EV)</option>
+                                            <option value="commercial">Commercial / Cargo Vehicle</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="verification-status mismatch" id="vin-verify-result" style="display: none;">
+                                    <i class="fa-solid fa-circle-exclamation"></i>
+                                    <div class="status-msg">
+                                        <strong id="vin-verify-title">Unverified</strong>
+                                        <span id="vin-verify-details">Please enter VIN and click verify.</span>
+                                    </div>
+                                </div>
+                                <div class="manual-vehicle-inputs" id="manual-vehicle-inputs" style="display: none; margin-top: 16px; border-top: 1px solid var(--border-color); padding-top: 16px;">
+                                    <h4 style="font-size:0.9rem; font-weight:600; margin-bottom:12px; color:var(--text-secondary);">Manual Vehicle Information</h4>
+                                    <div class="form-grid">
+                                        <div class="input-field">
+                                            <label for="inspect-model-manual">Model Name / Variant</label>
+                                            <input type="text" id="inspect-model-manual" placeholder="e.g. Scorpio-N Z8L" style="padding:10px 12px; background-color:rgba(255,255,255,0.03); border:1px solid var(--border-color); color:white; border-radius:8px; outline:none;">
+                                        </div>
+                                        <div class="input-field">
+                                            <label for="inspect-color-manual">Color</label>
+                                            <input type="text" id="inspect-color-manual" placeholder="e.g. Napoli Black" style="padding:10px 12px; background-color:rgba(255,255,255,0.03); border:1px solid var(--border-color); color:white; border-radius:8px; outline:none;">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Step 2: Location Assignment -->
+                        <div class="card form-step-card disabled" id="card-step-location">
+                            <div class="card-header">
+                                <span class="step-num">2</span>
+                                <h2>Select Yard Assignment</h2>
+                            </div>
+                            <div class="card-body">
+                                <div class="form-grid">
+                                    <div class="input-field">
+                                        <label for="inspect-yard">Yard</label>
+                                        <select id="inspect-yard" disabled>
+                                            <option value="">-- Choose Yard --</option>
+                                            <option value="beach">Beach Yard</option>
+                                            <option value="bhima">Bhima Yard</option>
+                                            <option value="showroom">Showroom Yard</option>
+                                        </select>
+                                    </div>
+                                    <div class="input-field">
+                                        <label for="inspect-bay">Select Parking Bay</label>
+                                        <select id="inspect-bay" disabled>
+                                            <option value="">-- Select Bay --</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Step 3: Checklists -->
+                        <div class="card form-step-card disabled" id="card-step-checks">
+                            <div class="card-header" style="flex-wrap: wrap; gap: 12px;">
+                                <div style="display: flex; align-items: center; gap: 10px;">
+                                    <span class="step-num">3</span>
+                                    <h2>PDI Inspection Checklist</h2>
+                                </div>
+                                <div class="checklist-header-actions" style="display: flex; align-items: center; gap: 12px; margin-left: auto;">
+                                    <div class="checklist-progress-wrapper" style="display: flex; align-items: center; gap: 8px; font-size: 0.85rem; color: var(--text-secondary);">
+                                        <span>Progress:</span>
+                                        <div class="progress-bar-container" style="width: 100px; height: 6px; background: rgba(255,255,255,0.05); border-radius: 3px; overflow: hidden; margin-top: 0;">
+                                            <div class="progress-bar" id="checklist-progress-bar" style="width: 0%; height: 100%; background: var(--mahindra-red); transition: width 0.3s ease;"></div>
+                                        </div>
+                                        <span id="checklist-progress-percent">0%</span>
+                                    </div>
+                                    <button class="btn btn-secondary btn-sm" id="btn-checklist-pass-all" type="button" style="padding: 6px 12px; font-size: 0.75rem;">
+                                        <i class="fa-solid fa-check-double"></i> Pass All
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="card-body" id="form-checklist-container">
+                                <!-- Generated Dynamically by JS -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Column 2: Interactive Damage Visualizer & Photos -->
+                    <div class="inspection-visual-column">
+                        <!-- Step 4: Scratch / Dent Plotter -->
+                        <div class="card form-step-card disabled" id="card-step-damage">
+                            <div class="card-header">
+                                <span class="step-num">4</span>
+                                <h2>Interactive Damage Plotter</h2>
+                                <span class="tip-badge">Click car body to plot scratches/dents</span>
+                            </div>
+                            <div class="card-body damage-body">
+                                <div class="damage-type-selector" style="display: flex; gap: 12px; margin-bottom: 12px; flex-wrap: wrap;">
+                                    <button class="btn btn-secondary btn-sm active" id="btn-damage-scratch" data-type="scratch" type="button" style="border-color: var(--status-pending);">
+                                        <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--status-pending); margin-right: 4px;"></span> Scratch
+                                    </button>
+                                    <button class="btn btn-secondary btn-sm" id="btn-damage-dent" data-type="dent" type="button">
+                                        <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--status-failed); margin-right: 4px;"></span> Dent
+                                    </button>
+                                    <button class="btn btn-secondary btn-sm" id="btn-damage-other" data-type="other" type="button">
+                                        <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #3b82f6; margin-right: 4px;"></span> Other Issue
+                                    </button>
+                                </div>
+                                <div class="damage-plotter-container">
+                                    <!-- SVG Car Wireframe -->
+                                    <svg id="car-wireframe" viewBox="0 0 600 350" xmlns="http://www.w3.org/2000/svg">
+                                        <!-- Outer Border Grid -->
+                                        <rect width="600" height="350" fill="rgba(255,255,255,0.02)" stroke="rgba(255,255,255,0.05)" stroke-width="1" rx="8"/>
+                                        
+                                        <!-- Labels for views -->
+                                        <text x="150" y="25" class="svg-label">TOP VIEW</text>
+                                        <text x="450" y="25" class="svg-label">SIDE VIEW (LEFT)</text>
+                                        <text x="150" y="335" class="svg-label">FRONT</text>
+                                        <text x="450" y="335" class="svg-label">REAR</text>
+
+                                        <g id="svg-drawings" stroke="rgba(255, 255, 255, 0.4)" stroke-width="2" fill="none">
+                                            <!-- TOP VIEW CAR -->
+                                            <g transform="translate(50, 40)">
+                                                <!-- Car body main shape -->
+                                                <path d="M 60,30 C 60,10 70,5 100,5 C 130,5 140,10 140,30 L 145,90 C 145,115 140,200 140,210 C 140,230 130,235 100,235 C 70,235 60,230 60,210 C 60,200 55,115 55,90 Z" />
+                                                <!-- Windshield & Rear glass -->
+                                                <path d="M 65,70 L 135,70 C 130,55 125,50 100,50 C 75,50 70,55 65,70 Z" />
+                                                <path d="M 65,180 L 135,180 C 130,195 125,198 100,198 C 75,198 70,195 65,180 Z" />
+                                                <!-- Side windows -->
+                                                <path d="M 62,80 L 62,170 C 68,170 70,165 70,125 C 70,85 68,80 62,80 Z" />
+                                                <path d="M 138,80 L 138,170 C 132,170 130,165 130,125 C 130,85 132,80 138,80 Z" />
+                                                <!-- Hood / Bonnet lines -->
+                                                <path d="M 75,5 L 75,40 C 75,45 85,48 100,48 C 115,48 125,45 125,40 L 125,5" />
+                                                <!-- Trunk / Boot lines -->
+                                                <path d="M 75,235 L 75,208 L 125,208 L 125,235" />
+                                            </g>
+
+                                            <!-- SIDE VIEW CAR -->
+                                            <g transform="translate(320, 90)">
+                                                <!-- Ground line -->
+                                                <line x1="0" y1="120" x2="250" y2="120" stroke="rgba(255,255,255,0.2)" stroke-dasharray="4,4"/>
+                                                <!-- Car silhouette -->
+                                                <path d="M 10,105 L 20,80 C 35,65 50,55 80,45 C 100,25 130,22 170,22 C 200,22 225,45 235,70 L 245,100 C 248,105 245,115 235,115 L 210,115 C 205,100 185,100 180,115 L 70,115 C 65,100 45,100 40,115 L 10,115 Z" />
+                                                <!-- Windows -->
+                                                <path d="M 85,50 L 125,32 L 125,75 L 85,75 Z" />
+                                                <path d="M 130,32 L 175,32 L 200,65 L 175,75 L 130,75 Z" />
+                                                <!-- Wheels -->
+                                                <circle cx="55" cy="115" r="18" stroke-width="2"/>
+                                                <circle cx="55" cy="115" r="8" fill="rgba(255,255,255,0.2)"/>
+                                                <circle cx="195" cy="115" r="18" stroke-width="2"/>
+                                                <circle cx="195" cy="115" r="8" fill="rgba(255,255,255,0.2)"/>
+                                            </g>
+                                            
+                                            <!-- FRONT VIEW -->
+                                            <g transform="translate(70, 260)">
+                                                <path d="M 10,40 C 10,35 15,30 20,25 C 25,10 45,5 60,5 C 75,5 95,10 100,25 C 105,30 110,35 110,40 L 110,55 C 110,60 105,62 100,62 L 20,62 C 15,62 10,60 10,55 Z" />
+                                                <!-- Windshield -->
+                                                <path d="M 22,25 L 98,25 C 90,12 80,10 60,10 C 40,10 30,12 22,25 Z" />
+                                                <!-- Headlights -->
+                                                <rect x="15" y="32" width="18" height="8" rx="2" stroke="rgba(255,255,255,0.6)"/>
+                                                <rect x="87" y="32" width="18" height="8" rx="2" stroke="rgba(255,255,255,0.6)"/>
+                                                <!-- Grille (Mahindra 7-slats vibe) -->
+                                                <rect x="42" y="32" width="36" height="12" rx="1"/>
+                                                <line x1="48" y1="32" x2="48" y2="44" />
+                                                <line x1="54" y1="32" x2="54" y2="44" />
+                                                <line x1="60" y1="32" x2="60" y2="44" />
+                                                <line x1="66" y1="32" x2="66" y2="44" />
+                                                <line x1="72" y1="32" x2="72" y2="44" />
+                                            </g>
+
+                                            <!-- REAR VIEW -->
+                                            <g transform="translate(420, 260)">
+                                                <path d="M 10,40 C 10,35 15,30 20,25 C 25,10 45,5 60,5 C 75,5 95,10 100,25 C 105,30 110,35 110,40 L 110,55 C 110,60 105,62 100,62 L 20,62 C 15,62 10,60 10,55 Z" />
+                                                <!-- Rear Windshield -->
+                                                <path d="M 22,25 L 98,25 C 92,15 80,12 60,12 C 40,12 28,15 22,25 Z" />
+                                                <!-- Tail lights -->
+                                                <path d="M 15,32 H 28 V 40 H 15 Z" />
+                                                <path d="M 95,32 H 82 V 40 H 95 Z" />
+                                                <!-- License plate holder -->
+                                                <rect x="42" y="36" width="36" height="12" rx="2"/>
+                                            </g>
+                                        </g>
+
+                                        <!-- Plot markers group -->
+                                        <g id="damage-markers-group"></g>
+                                    </svg>
+                                </div>
+
+                                <!-- Damage List -->
+                                <div class="damage-list-wrapper">
+                                    <h4>Recorded Defects (<span id="damage-count">0</span>)</h4>
+                                    <ul class="damage-list" id="damage-list-items">
+                                        <li class="empty-list-placeholder">No scratches or dents plotted. Click the car outline to add.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Step 5: Photo Upload / Camera Proof -->
+                        <div class="card form-step-card disabled" id="card-step-photos">
+                            <div class="card-header">
+                                <span class="step-num">5</span>
+                                <h2>Photo Proof (Scratches / Dents / VIN)</h2>
+                            </div>
+                            <div class="card-body">
+                                <div class="photo-upload-area" id="photo-drop-zone">
+                                    <i class="fa-solid fa-cloud-arrow-up"></i>
+                                    <p>Drag & Drop images or click to select</p>
+                                    <span class="upload-subtext">Capture VIN plates, panel defects, and checklist compliance.</span>
+                                    <input type="file" id="photo-input" multiple accept="image/*" style="display: none;">
+                                </div>
+                                <div class="photo-preview-grid" id="photo-previews">
+                                    <!-- Image thumbnails generated dynamically -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Submit Section -->
+                        <div class="form-actions-bar disabled" id="form-actions-container">
+                            <button class="btn btn-secondary btn-large" id="btn-cancel-inspection">Cancel</button>
+                            <button class="btn btn-primary btn-large" id="btn-submit-inspection">
+                                <i class="fa-solid fa-circle-check"></i> Complete Inspection & Save
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- VIEW 4: VEHICLE REGISTRY -->
+            <section id="view-vehicles" class="content-view">
+                <div class="toolbar">
+                    <div class="filter-group">
+                        <select id="filter-model">
+                            <option value="">All Models</option>
+                            <option value="XUV700">XUV700</option>
+                            <option value="Scorpio-N">Scorpio-N</option>
+                            <option value="Thar">Thar</option>
+                            <option value="Thar ROXX">Thar ROXX</option>
+                            <option value="XUV 3XO">XUV 3XO</option>
+                            <option value="Bolero Neo">Bolero Neo</option>
+                        </select>
+                        <select id="filter-yard">
+                            <option value="">All Yards</option>
+                            <option value="beach">Beach Yard</option>
+                            <option value="bhima">Bhima Yard</option>
+                            <option value="showroom">Showroom Yard</option>
+                        </select>
+                        <select id="filter-status">
+                            <option value="">All Statuses</option>
+                            <option value="Pending PDI">Pending PDI</option>
+                            <option value="Passed">PDI Passed</option>
+                            <option value="Failed">PDI Failed / Repairs</option>
+                            <option value="Delivered">Delivered</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-secondary" id="btn-export-data">
+                        <i class="fa-solid fa-file-excel"></i> Export Report
+                    </button>
+                </div>
+
+                <div class="card">
+                    <div class="table-container">
+                        <table class="data-table" id="table-registry">
+                            <thead>
+                                <tr>
+                                    <th>Model</th>
+                                    <th>VIN Number</th>
+                                    <th>Color</th>
+                                    <th>Yard & Bay</th>
+                                    <th>Inspection Date</th>
+                                    <th>Defects Found</th>
+                                    <th>PDI Status</th>
+                                    <th style="text-align: center;">DMS PDI</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Dynamic rows -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- VIEW 5: PDI CHECKLIST REFERENCE -->
+            <section id="view-checklist" class="content-view">
+                <div class="toolbar">
+                    <div class="tab-group" id="checklist-tab-switcher">
+                        <button class="tab-btn active" data-checklist="standard">
+                            <i class="fa-solid fa-car"></i> Standard PDI Checklist
+                        </button>
+                        <button class="tab-btn" data-checklist="ev">
+                            <i class="fa-solid fa-bolt" style="color: #f59e0b;"></i> EV Specific Checklist
+                        </button>
+                        <button class="tab-btn" data-checklist="commercial">
+                            <i class="fa-solid fa-truck" style="color: #3b82f6;"></i> Commercial Checklist
+                        </button>
+                    </div>
+                    
+                    <div style="display:flex; align-items:center; gap:16px; flex-wrap:wrap;">
+                        <div class="search-box">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            <input type="text" id="checklist-search" placeholder="Search checklist items...">
+                        </div>
+                        <button class="btn btn-secondary" id="btn-print-checklist">
+                            <i class="fa-solid fa-print"></i> Print Checklist
+                        </button>
+                    </div>
+                </div>
+
+                <div class="card checklist-card">
+                    <div class="checklist-container" id="checklist-items-container">
+                        <!-- Dynamic categories & items populated by JS -->
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- MODAL: YARD SLOT VEHICLE MOVE / ASSIGN -->
+    <div class="modal" id="modal-slot-action">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modal-slot-title">Bay B-12 Action</h3>
+                <button class="close-modal-btn" id="btn-close-modal">&times;</button>
+            </div>
+            <div class="modal-body" id="modal-slot-body">
+                <!-- Content injected dynamically -->
+            </div>
+            <div class="modal-footer" id="modal-slot-footer">
+                <!-- Action buttons -->
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: VEHICLE DETAIL VIEW -->
+    <div class="modal" id="modal-vehicle-detail">
+        <div class="modal-content vehicle-detail-modal">
+            <div class="modal-header">
+                <h3>Vehicle PDI File</h3>
+                <button class="close-modal-btn" id="btn-close-detail-modal">&times;</button>
+            </div>
+            <div class="modal-body" id="detail-modal-body">
+                <!-- Injected via JS -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="btn-print-report">
+                    <i class="fa-solid fa-print"></i> Print Report
+                </button>
+                <button class="btn btn-primary" id="btn-detail-close">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main JS Application -->
+    <script src="app.js?v=7"></script>
+</body>
+</html>

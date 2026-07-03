@@ -1,0 +1,19 @@
+# Node dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Local data / DB files
+data/*.json
+
+# Editor / Tool configurations
+.claude/
+.gemini/
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
