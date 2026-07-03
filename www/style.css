@@ -1677,10 +1677,12 @@ select option {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        height: 60px;
+        padding-top: env(safe-area-inset-top, 0px);
+        height: calc(60px + env(safe-area-inset-top, 0px));
         background-color: var(--bg-sidebar);
         border-bottom: 1px solid var(--border-color);
-        padding: 0 16px;
+        padding-left: 16px;
+        padding-right: 16px;
         position: fixed;
         top: 0;
         left: 0;
@@ -1717,7 +1719,7 @@ select option {
     /* Main Content adjust for mobile header */
     .main-content {
         margin-left: 0 !important;
-        padding: 80px 16px 24px 16px !important;
+        padding: calc(80px + env(safe-area-inset-top, 0px)) 16px 24px 16px !important;
         width: 100vw;
         overflow-x: hidden;
     }
@@ -1726,6 +1728,7 @@ select option {
     .sidebar {
         width: 260px !important;
         left: -260px !important;
+        padding-top: calc(24px + env(safe-area-inset-top, 0px)) !important;
         transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         z-index: 1000;
         box-shadow: 5px 0 25px rgba(0, 0, 0, 0.5);
