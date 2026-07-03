@@ -158,7 +158,94 @@ function loadFromLocalStorage() {
         state.vehicles = JSON.parse(cached);
         showToast("Loaded data from offline browser cache.");
     } else {
-        state.vehicles = [];
+        // Pre-populate with consistent mock vehicles for Mahindra PDI
+        state.vehicles = [
+            {
+                vin: "MA3XXA7B1KG102948",
+                model: "XUV700 AX7 L",
+                color: "Everest White",
+                yard: "beach",
+                bay: "A-1",
+                status: "Passed",
+                prePdiStatus: "Passed",
+                prePdiChecklist: { transit: "Passed", keys: "Passed", leakage: "Passed", battery: "Passed" },
+                arrivalDate: "2026-07-01",
+                checklist: {
+                    "Exterior Panels & Fitment": "Passed",
+                    "Headlights & Indicators": "Passed",
+                    "Cabin Control Inspection": "Passed",
+                    "Battery Volt / State Test": "Passed",
+                    "Tire Air Pressure": "Passed",
+                    "Fluid / Engine Levels Check": "Passed"
+                },
+                defects: [],
+                photos: []
+            },
+            {
+                vin: "MA3XXT3C4KG203849",
+                model: "Thar ROXX AX7L",
+                color: "Deep Forest",
+                yard: "bhima",
+                bay: "B-2",
+                status: "Failed",
+                prePdiStatus: "Passed",
+                prePdiChecklist: { transit: "Passed", keys: "Passed", leakage: "Passed", battery: "Passed" },
+                arrivalDate: "2026-07-02",
+                checklist: {
+                    "Exterior Panels & Fitment": "Failed",
+                    "Headlights & Indicators": "Passed",
+                    "Cabin Control Inspection": "Passed",
+                    "Battery Volt / State Test": "Passed",
+                    "Tire Air Pressure": "Passed",
+                    "Fluid / Engine Levels Check": "Passed"
+                },
+                defects: [{ x: 30, y: 40, note: "Scratched right fender (Transit damage missed initially)", component: "Body", severity: "Medium" }],
+                photos: []
+            },
+            {
+                vin: "MA3XXS5D8KG304721",
+                model: "Scorpio-N Z8L",
+                color: "Napoli Black",
+                yard: "showroom",
+                bay: "C-1",
+                status: "Pending PDI",
+                prePdiStatus: "Passed",
+                prePdiChecklist: { transit: "Passed", keys: "Passed", leakage: "Passed", battery: "Passed" },
+                arrivalDate: "2026-07-03",
+                checklist: {},
+                defects: [],
+                photos: []
+            },
+            {
+                vin: "MA3XXB2A5KG405839",
+                model: "XUV 3XO AX5L",
+                color: "Rage Red",
+                yard: "",
+                bay: "",
+                status: "Pending PDI",
+                prePdiStatus: "Pending",
+                prePdiChecklist: { transit: null, keys: null, leakage: null, battery: null },
+                arrivalDate: "2026-07-03",
+                checklist: {},
+                defects: [],
+                photos: []
+            },
+            {
+                vin: "MA3XXN6F9KG506924",
+                model: "Bolero Neo N10",
+                color: "Dazzling Silver",
+                yard: "",
+                bay: "",
+                status: "Pending PDI",
+                prePdiStatus: "Failed",
+                prePdiChecklist: { transit: "Failed", keys: "Passed", leakage: "Passed", battery: "Passed" },
+                arrivalDate: "2026-07-03",
+                checklist: {},
+                defects: [],
+                photos: []
+            }
+        ];
+        saveState();
     }
 }
 
@@ -322,12 +409,13 @@ function renderRecentArrivalsTable() {
     const sorted = [...state.vehicles].sort((a,b) => new Date(b.arrivalDate) - new Date(a.arrivalDate)).slice(0, 5);
 
     if (sorted.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: var(--text-muted);">No vehicles in database</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: var(--text-muted);">No vehicles in database</td></tr>`;
         return;
     }
 
     sorted.forEach(car => {
         const tr = document.createElement("tr");
+        const prePdiBadge = getPrePdiBadgeHTML(car.prePdiStatus);
         const statusBadge = getStatusBadgeHTML(car.status);
         const yardName = yardSpecs[car.yard] ? yardSpecs[car.yard].name : "Not Assigned";
         const bayVal = car.bay ? `${yardName} (Bay ${car.bay})` : "Unassigned";
@@ -337,6 +425,7 @@ function renderRecentArrivalsTable() {
             <td><code style="font-family:monospace; font-weight:600;">${car.vin}</code></td>
             <td>${car.color}</td>
             <td>${bayVal}</td>
+            <td>${prePdiBadge}</td>
             <td>${statusBadge}</td>
             <td>
                 ${car.status === "Pending PDI" 
@@ -390,6 +479,8 @@ function simulateNewPlantDelivery() {
         yard: "", // Unassigned yard
         bay: "",  // Unassigned bay
         status: "Pending PDI",
+        prePdiStatus: "Pending",
+        prePdiChecklist: { transit: null, keys: null, leakage: null, battery: null },
         arrivalDate: today,
         checklist: {},
         defects: [],
@@ -921,6 +1012,8 @@ function setupInspectionForm() {
                     yard: "",
                     bay: "",
                     status: "Pending PDI",
+                    prePdiStatus: "Pending",
+                    prePdiChecklist: { transit: null, keys: null, leakage: null, battery: null },
                     arrivalDate: today,
                     checklist: {},
                     defects: [],
@@ -970,6 +1063,13 @@ function setupInspectionForm() {
             state.currentUploadedPhotos = [...existing.photos];
             renderPhotoPreviews();
 
+            // Show Pre-PDI container and render checklist
+            const prePdiContainer = document.getElementById("pre-pdi-container");
+            if (prePdiContainer) {
+                prePdiContainer.style.display = "block";
+                renderPrePdiChecklist();
+            }
+
         } else {
             // Not found in plant manifests - Enable Manual verification input
             verifyResult.style.display = "flex";
@@ -992,6 +1092,8 @@ function setupInspectionForm() {
                     yard: "",
                     bay: "",
                     status: "Pending PDI",
+                    prePdiStatus: "Pending",
+                    prePdiChecklist: { transit: null, keys: null, leakage: null, battery: null },
                     arrivalDate: today,
                     checklist: {},
                     defects: [],
@@ -1033,6 +1135,13 @@ function setupInspectionForm() {
             // Photos Preview
             state.currentUploadedPhotos = [...existing.photos];
             renderPhotoPreviews();
+
+            // Show Pre-PDI container and render checklist
+            const prePdiContainer = document.getElementById("pre-pdi-container");
+            if (prePdiContainer) {
+                prePdiContainer.style.display = "block";
+                renderPrePdiChecklist();
+            }
         }
     });
 
@@ -1251,6 +1360,8 @@ function setupInspectionForm() {
                 bay,
                 type: state.activeVehicleForPDI.type,
                 status: finalStatus,
+                prePdiStatus: state.activeVehicleForPDI.prePdiStatus || "Pending",
+                prePdiChecklist: state.activeVehicleForPDI.prePdiChecklist ? { ...state.activeVehicleForPDI.prePdiChecklist } : { transit: null, keys: null, leakage: null, battery: null },
                 checklist: { ...state.activeVehicleForPDI.checklist },
                 defects: [...state.selectedDamagePoints],
                 photos: [...state.currentUploadedPhotos]
@@ -1265,6 +1376,45 @@ function setupInspectionForm() {
         window.location.hash = "vehicles";
         setupNavigation();
     });
+
+    // Bind Pre-PDI checklist button clicks
+    const prePdiContainer = document.getElementById("pre-pdi-container");
+    if (prePdiContainer) {
+        const buttons = prePdiContainer.querySelectorAll(".btn-pdi-check");
+        buttons.forEach(btn => {
+            btn.addEventListener("click", () => {
+                if (!state.activeVehicleForPDI) return;
+                const check = btn.getAttribute("data-check");
+                const status = btn.getAttribute("data-status");
+                
+                // Toggle selection
+                if (!state.activeVehicleForPDI.prePdiChecklist) {
+                    state.activeVehicleForPDI.prePdiChecklist = { transit: null, keys: null, leakage: null, battery: null };
+                }
+                
+                if (state.activeVehicleForPDI.prePdiChecklist[check] === status) {
+                    state.activeVehicleForPDI.prePdiChecklist[check] = null;
+                } else {
+                    state.activeVehicleForPDI.prePdiChecklist[check] = status;
+                }
+                
+                // Recalculate prePdiStatus
+                const vals = Object.values(state.activeVehicleForPDI.prePdiChecklist);
+                if (vals.includes("Failed")) {
+                    state.activeVehicleForPDI.prePdiStatus = "Failed";
+                } else if (vals.every(v => v === "Passed")) {
+                    state.activeVehicleForPDI.prePdiStatus = "Passed";
+                } else {
+                    state.activeVehicleForPDI.prePdiStatus = "Pending";
+                }
+                
+                renderPrePdiChecklist();
+                saveState();
+                updateDashboardStats();
+                renderRecentArrivalsTable();
+            });
+        });
+    }
 }
 
 function startPDIForVehicle(vin) {
@@ -1301,6 +1451,13 @@ function resetInspectionForm() {
         manualDiv.style.display = "none";
         document.getElementById("inspect-model-manual").value = "";
         document.getElementById("inspect-color-manual").value = "";
+    }
+
+    const prePdiContainer = document.getElementById("pre-pdi-container");
+    if (prePdiContainer) {
+        prePdiContainer.style.display = "none";
+        const buttons = prePdiContainer.querySelectorAll(".btn-pdi-check");
+        buttons.forEach(btn => btn.classList.remove("active-passed", "active-failed"));
     }
 
     const steps = [
@@ -1502,12 +1659,13 @@ function renderRegistryTable() {
     });
 
     if (filtered.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="9" style="text-align: center; color: var(--text-muted);">No matching vehicles in registry</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="10" style="text-align: center; color: var(--text-muted);">No matching vehicles in registry</td></tr>`;
         return;
     }
 
     filtered.forEach(car => {
         const tr = document.createElement("tr");
+        const prePdiBadge = getPrePdiBadgeHTML(car.prePdiStatus);
         const statusBadge = getStatusBadgeHTML(car.status);
         const yardName = yardSpecs[car.yard] ? yardSpecs[car.yard].name : "Not Parked";
         const bayLocation = car.bay ? `${yardName} - Bay ${car.bay}` : "Unassigned";
@@ -1520,6 +1678,7 @@ function renderRegistryTable() {
             <td>${bayLocation}</td>
             <td>${car.arrivalDate}</td>
             <td>${car.defects.length} items</td>
+            <td>${prePdiBadge}</td>
             <td>${statusBadge}</td>
             <td style="text-align: center;">
                 <button class="btn-dms-toggle" data-vin="${car.vin}" style="background:transparent; border:none; cursor:pointer; font-size:1.25rem; outline:none; padding:4px;">
@@ -1656,12 +1815,39 @@ function showVehicleDetails(vin) {
         `;
     }
 
+    // Map Pre-PDI checklist dynamically
+    let prePdiChecklistHTML = "";
+    if (car.prePdiChecklist) {
+        const prePdiLabels = {
+            transit: "Transit / Transport Damage Check",
+            keys: "Key Fobs & Manuals Check",
+            leakage: "Under-bonnet Leakage Check",
+            battery: "Battery State / Voltage Test"
+        };
+        for (const [key, status] of Object.entries(car.prePdiChecklist)) {
+            let statusIcon = '<i class="fa-solid fa-hourglass-half" style="color:var(--status-pending)"></i> Pending';
+            if (status === "Passed") {
+                statusIcon = '<i class="fa-solid fa-circle-check" style="color:var(--status-passed)"></i> Passed';
+            } else if (status === "Failed") {
+                statusIcon = '<i class="fa-solid fa-circle-xmark" style="color:var(--status-failed)"></i> Failed';
+            }
+            prePdiChecklistHTML += `
+                <div class="detail-info-row" style="margin-bottom:8px; border-bottom:1px solid rgba(255,255,255,0.02); padding-bottom:6px; align-items:center;">
+                    <span style="max-width:70%; font-size:0.85rem; line-height:1.4; text-align:left;">${prePdiLabels[key] || key}</span>
+                    <span style="font-size:0.85rem; font-weight:600;">${statusIcon}</span>
+                </div>
+            `;
+        }
+    } else {
+        prePdiChecklistHTML = `<div class="empty-list-placeholder" style="padding:10px 0;">No Pre-PDI records available.</div>`;
+    }
+
     // Build the detail modal layout
     body.innerHTML = `
         <div class="detail-grid">
             <div class="detail-section">
                 <h4>Vehicle Information</h4>
-                <div class="detail-info-list" style="margin-bottom:24px;">
+                <div class="detail-info-list" style="margin-bottom:20px;">
                     <div class="detail-info-row">
                         <span class="detail-info-label">Model:</span>
                         <span class="detail-info-value">${car.model}</span>
@@ -1683,13 +1869,22 @@ function showVehicleDetails(vin) {
                         <span class="detail-info-value">${yardName} - ${bayName}</span>
                     </div>
                     <div class="detail-info-row">
-                        <span class="detail-info-label">Overall Status:</span>
+                        <span class="detail-info-label">Pre-PDI Status:</span>
+                        <span class="detail-info-value">${getPrePdiBadgeHTML(car.prePdiStatus)}</span>
+                    </div>
+                    <div class="detail-info-row">
+                        <span class="detail-info-label">PDI Status:</span>
                         <span class="detail-info-value">${getStatusBadgeHTML(car.status)}</span>
                     </div>
                 </div>
 
-                <h4>Checklist Verification</h4>
-                <div class="detail-info-list" style="max-height: 250px; overflow-y: auto; padding-right: 8px; border: 1px solid var(--border-color); padding: 12px; border-radius: 8px; background: rgba(255,255,255,0.01);">
+                <h4 style="margin-top:20px;">Pre-PDI Checklist (Arrival Stage)</h4>
+                <div class="detail-info-list" style="margin-bottom:20px; border: 1px solid var(--border-color); padding: 12px; border-radius: 8px; background: rgba(255,255,255,0.01);">
+                    ${prePdiChecklistHTML}
+                </div>
+
+                <h4 style="margin-top:20px;">Detailed PDI Checklist Verification</h4>
+                <div class="detail-info-list" style="max-height: 200px; overflow-y: auto; padding-right: 8px; border: 1px solid var(--border-color); padding: 12px; border-radius: 8px; background: rgba(255,255,255,0.01);">
                     ${checklistHTML}
                 </div>
             </div>
@@ -1976,6 +2171,50 @@ function renderChecklistPage() {
             </div>
         `;
     }
+}
+
+function getPrePdiBadgeHTML(status) {
+    if (status === "Passed") {
+        return `<span class="badge badge-passed"><i class="fa-solid fa-circle-check"></i> Passed</span>`;
+    }
+    if (status === "Failed") {
+        return `<span class="badge badge-failed"><i class="fa-solid fa-circle-xmark"></i> Failed</span>`;
+    }
+    return `<span class="badge badge-pending"><i class="fa-solid fa-hourglass-half"></i> Pending</span>`;
+}
+
+function renderPrePdiChecklist() {
+    const container = document.getElementById("pre-pdi-container");
+    if (!container || !state.activeVehicleForPDI) return;
+    
+    // Ensure prePdiChecklist is initialized
+    if (!state.activeVehicleForPDI.prePdiChecklist) {
+        state.activeVehicleForPDI.prePdiChecklist = {
+            transit: null,
+            keys: null,
+            leakage: null,
+            battery: null
+        };
+    }
+    
+    const checklist = state.activeVehicleForPDI.prePdiChecklist;
+    
+    // Select all btn-pdi-check elements and set active states
+    const buttons = container.querySelectorAll(".btn-pdi-check");
+    buttons.forEach(btn => {
+        const check = btn.getAttribute("data-check");
+        const status = btn.getAttribute("data-status");
+        
+        btn.classList.remove("active-passed", "active-failed");
+        
+        if (checklist[check] === status) {
+            if (status === "Passed") {
+                btn.classList.add("active-passed");
+            } else if (status === "Failed") {
+                btn.classList.add("active-failed");
+            }
+        }
+    });
 }
 
 // --- EV / Commercial Detection and Checklist Dynamic Mapper Helpers ---

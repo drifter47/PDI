@@ -200,13 +200,14 @@
                             <table class="data-table" id="table-recent-arrivals">
                                 <thead>
                                     <tr>
-                                        <th>Model</th>
-                                        <th>VIN Number</th>
-                                        <th>Color</th>
-                                        <th>Yard Location</th>
-                                        <th>PDI Status</th>
-                                        <th>Action</th>
-                                    </tr>
+                                         <th>Model</th>
+                                         <th>VIN Number</th>
+                                         <th>Color</th>
+                                         <th>Yard Location</th>
+                                         <th>Pre-PDI</th>
+                                         <th>PDI Status</th>
+                                         <th>Action</th>
+                                     </tr>
                                 </thead>
                                 <tbody>
                                     <!-- Dynamic rows -->
@@ -272,7 +273,7 @@
                         <div class="card form-step-card">
                             <div class="card-header">
                                 <span class="step-num">1</span>
-                                <h2>VIN & Document Verification</h2>
+                                <h2>VIN Check & Pre-PDI Check</h2>
                             </div>
                             <div class="card-body">
                                 <div class="vin-input-group" style="display: flex; flex-direction: column; gap: 16px;">
@@ -309,6 +310,58 @@
                                         <div class="input-field">
                                             <label for="inspect-color-manual">Color</label>
                                             <input type="text" id="inspect-color-manual" placeholder="e.g. Napoli Black" style="padding:10px 12px; background-color:rgba(255,255,255,0.03); border:1px solid var(--border-color); color:white; border-radius:8px; outline:none;">
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Pre-PDI checklist for arrival stage -->
+                                <div id="pre-pdi-container" style="display: none; margin-top: 16px; border-top: 1px solid var(--border-color); padding-top: 16px;">
+                                    <h4 style="font-size:0.95rem; font-weight:600; margin-bottom:12px; color:var(--text-secondary); display: flex; align-items: center; gap: 8px;">
+                                        <i class="fa-solid fa-clipboard-list" style="color: var(--accent-color);"></i> Pre-PDI Checklist (Arrival Checks)
+                                    </h4>
+                                    <div style="display: flex; flex-direction: column; gap: 12px;">
+                                        <div class="pre-pdi-item" style="display: flex; justify-content: space-between; align-items: center; padding: 10px; background-color: rgba(255,255,255,0.02); border-radius: 8px; border: 1px solid rgba(255,255,255,0.05);">
+                                            <div style="display: flex; flex-direction: column; gap: 4px; text-align: left;">
+                                                <span style="font-size: 0.85rem; font-weight: 500;">Transit / Transport Damage</span>
+                                                <span style="font-size: 0.75rem; color: var(--text-muted);">Check exterior panels for shipping scratches/dents</span>
+                                            </div>
+                                            <div class="status-btn-group">
+                                                <button type="button" class="btn btn-sm btn-pdi-check" data-check="transit" data-status="Passed">No Damage</button>
+                                                <button type="button" class="btn btn-sm btn-pdi-check" data-check="transit" data-status="Failed" style="border-color: rgba(239,68,68,0.3); color: var(--status-failed);">Damaged</button>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="pre-pdi-item" style="display: flex; justify-content: space-between; align-items: center; padding: 10px; background-color: rgba(255,255,255,0.02); border-radius: 8px; border: 1px solid rgba(255,255,255,0.05);">
+                                            <div style="display: flex; flex-direction: column; gap: 4px; text-align: left;">
+                                                <span style="font-size: 0.85rem; font-weight: 500;">Key Fobs & Manuals</span>
+                                                <span style="font-size: 0.75rem; color: var(--text-muted);">Verify all key fobs and transit documents are present</span>
+                                            </div>
+                                            <div class="status-btn-group">
+                                                <button type="button" class="btn btn-sm btn-pdi-check" data-check="keys" data-status="Passed">Present</button>
+                                                <button type="button" class="btn btn-sm btn-pdi-check" data-check="keys" data-status="Failed" style="border-color: rgba(239,68,68,0.3); color: var(--status-failed);">Missing</button>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="pre-pdi-item" style="display: flex; justify-content: space-between; align-items: center; padding: 10px; background-color: rgba(255,255,255,0.02); border-radius: 8px; border: 1px solid rgba(255,255,255,0.05);">
+                                            <div style="display: flex; flex-direction: column; gap: 4px; text-align: left;">
+                                                <span style="font-size: 0.85rem; font-weight: 500;">Under-bonnet Leakage</span>
+                                                <span style="font-size: 0.75rem; color: var(--text-muted);">Check engine bay/undercarriage for active fluid leaks</span>
+                                            </div>
+                                            <div class="status-btn-group">
+                                                <button type="button" class="btn btn-sm btn-pdi-check" data-check="leakage" data-status="Passed">Clean</button>
+                                                <button type="button" class="btn btn-sm btn-pdi-check" data-check="leakage" data-status="Failed" style="border-color: rgba(239,68,68,0.3); color: var(--status-failed);">Leaking</button>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="pre-pdi-item" style="display: flex; justify-content: space-between; align-items: center; padding: 10px; background-color: rgba(255,255,255,0.02); border-radius: 8px; border: 1px solid rgba(255,255,255,0.05);">
+                                            <div style="display: flex; flex-direction: column; gap: 4px; text-align: left;">
+                                                <span style="font-size: 0.85rem; font-weight: 500;">Battery State / Voltage</span>
+                                                <span style="font-size: 0.75rem; color: var(--text-muted);">Measure initial battery state of health (&gt; 12.2V)</span>
+                                            </div>
+                                            <div class="status-btn-group">
+                                                <button type="button" class="btn btn-sm btn-pdi-check" data-check="battery" data-status="Passed">OK</button>
+                                                <button type="button" class="btn btn-sm btn-pdi-check" data-check="battery" data-status="Failed" style="border-color: rgba(239,68,68,0.3); color: var(--status-failed);">Low / Bad</button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -571,6 +624,7 @@
                                     <th>Yard & Bay</th>
                                     <th>Inspection Date</th>
                                     <th>Defects Found</th>
+                                    <th>Pre-PDI</th>
                                     <th>PDI Status</th>
                                     <th style="text-align: center;">DMS PDI</th>
                                     <th>Actions</th>
