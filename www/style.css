@@ -1658,3 +1658,145 @@ select option {
         border-bottom: 1px solid #ccc !important;
     }
 }
+
+/* --- Mobile Responsive Layout Updates --- */
+
+/* Hide mobile header by default on desktop */
+.mobile-header {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    /* Set layout constants for mobile */
+    :root {
+        --sidebar-width: 0px; /* main content has no static left margin */
+    }
+
+    /* Mobile Header Layout */
+    .mobile-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        height: 60px;
+        background-color: var(--bg-sidebar);
+        border-bottom: 1px solid var(--border-color);
+        padding: 0 16px;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 99;
+    }
+
+    .mobile-menu-btn {
+        background: none;
+        border: none;
+        color: var(--text-primary);
+        font-size: 1.3rem;
+        cursor: pointer;
+        padding: 8px;
+    }
+
+    .mobile-brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .mahindra-peaks-mobile {
+        width: 32px;
+        height: auto;
+    }
+
+    .mobile-brand span {
+        font-weight: 700;
+        letter-spacing: 1px;
+        font-size: 1rem;
+    }
+
+    /* Main Content adjust for mobile header */
+    .main-content {
+        margin-left: 0 !important;
+        padding: 80px 16px 24px 16px !important;
+        width: 100vw;
+        overflow-x: hidden;
+    }
+
+    /* Sidebar drawer style */
+    .sidebar {
+        width: 260px !important;
+        left: -260px !important;
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        z-index: 1000;
+        box-shadow: 5px 0 25px rgba(0, 0, 0, 0.5);
+    }
+
+    .sidebar.open {
+        transform: translateX(260px);
+    }
+
+    /* Top Bar alignment for mobile */
+    .top-bar {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+        padding-bottom: 16px;
+    }
+
+    .top-bar-actions {
+        width: 100%;
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+
+    .search-box {
+        width: 100% !important;
+    }
+
+    .btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    /* Dashboard Stats Grid */
+    .stats-grid {
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)) !important;
+        gap: 12px !important;
+    }
+
+    /* Tables responsive wrapping */
+    .table-container {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        border-radius: 8px;
+    }
+
+    /* Toolbar responsive wrapping */
+    .toolbar {
+        flex-direction: column;
+        align-items: stretch !important;
+        gap: 16px;
+    }
+
+    .filter-group {
+        flex-direction: column;
+    }
+
+    /* Yard Grid Container Horizontal Scroll */
+    .yard-grid-container {
+        padding: 16px !important;
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .visual-grid {
+        min-width: 640px !important;
+    }
+
+    /* Detail Modal layout */
+    .detail-grid {
+        grid-template-columns: 1fr !important;
+        gap: 16px !important;
+    }
+}
+

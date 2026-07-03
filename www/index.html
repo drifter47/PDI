@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Mahindra PDI Portal - Yard & Vehicle Inspection Manager</title>
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -15,6 +15,20 @@
 </head>
 <body class="dark-theme">
     <div class="app-container">
+        <!-- Mobile Header -->
+        <header class="mobile-header">
+            <button id="mobile-menu-toggle" class="mobile-menu-btn">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+            <div class="mobile-brand">
+                <svg viewBox="0 0 100 60" class="mahindra-peaks-mobile" style="width: 32px; height: auto;">
+                    <path d="M15 50 L35 15 L50 38 L65 15 L85 50 H70 L65 40 L50 60 L35 40 L30 50 Z" fill="#E31837" />
+                </svg>
+                <span>MAHINDRA PDI</span>
+            </div>
+            <div style="width: 40px;"></div> <!-- Spacer to keep brand logo centered -->
+        </header>
+
         <!-- Sidebar Navigation -->
         <aside class="sidebar">
             <div class="sidebar-header">

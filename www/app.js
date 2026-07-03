@@ -261,6 +261,22 @@ function setupNavigation() {
             switchView(hashView);
         }
     }
+
+    // Setup mobile drawer menu toggle
+    const toggleBtn = document.getElementById("mobile-menu-toggle");
+    const sidebar = document.querySelector(".sidebar");
+    if (toggleBtn && sidebar) {
+        toggleBtn.addEventListener("click", () => {
+            sidebar.classList.toggle("open");
+        });
+        
+        // Close sidebar drawer when clicking a navigation link
+        navItems.forEach(item => {
+            item.addEventListener("click", () => {
+                sidebar.classList.remove("open");
+            });
+        });
+    }
 }
 
 // --- Dashboard Module ---
