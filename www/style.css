@@ -1756,15 +1756,42 @@ select option {
         width: 100% !important;
     }
 
-    .btn {
-        width: 100%;
+    /* Force specific layout actions to be full width, leaving table actions compact */
+    .top-bar-actions .btn,
+    .form-actions-bar .btn {
+        width: 100% !important;
         justify-content: center;
     }
 
-    /* Dashboard Stats Grid */
+    /* Optimize cards and fix CSS grid child width overflow issues */
+    .card {
+        padding: 16px !important;
+        min-width: 0 !important; /* critical to let inner content (tables/scrolls) scale */
+    }
+
+    /* Stack card headers vertically on mobile to prevent overflow */
+    .card-header {
+        flex-direction: column;
+        align-items: stretch !important;
+        gap: 12px;
+    }
+    .card-header .btn {
+        width: 100% !important;
+        justify-content: center;
+    }
+
+    /* Dashboard Stats Grid (Symmetric 2-column layout) */
     .stats-grid {
-        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)) !important;
+        grid-template-columns: repeat(2, 1fr) !important;
         gap: 12px !important;
+    }
+    .stats-grid .stat-card {
+        padding: 16px !important;
+        gap: 12px !important;
+    }
+    /* Total Arrivals card spans across both columns */
+    .stats-grid .stat-card:nth-child(5) {
+        grid-column: span 2;
     }
 
     /* Tables responsive wrapping */
