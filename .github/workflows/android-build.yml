@@ -17,7 +17,7 @@ jobs:
     - name: Setup Node.js Environment
       uses: actions/setup-node@v4
       with:
-        node-version: 18
+        node-version: 22
         cache: 'npm'
 
     - name: Install Node Dependencies
@@ -27,7 +27,7 @@ jobs:
       uses: actions/setup-java@v4
       with:
         distribution: 'zulu'
-        java-version: '17'
+        java-version: '21'
 
     - name: Sync Capacitor Android
       run: |
