@@ -391,19 +391,20 @@
                                 </div>
                                 <div class="damage-plotter-container">
                                     <!-- SVG Car Wireframe -->
-                                    <svg id="car-wireframe" viewBox="0 0 600 350" xmlns="http://www.w3.org/2000/svg">
+                                    <svg id="car-wireframe" viewBox="0 0 800 500" xmlns="http://www.w3.org/2000/svg">
                                         <!-- Outer Border Grid -->
-                                        <rect width="600" height="350" fill="rgba(255,255,255,0.02)" stroke="rgba(255,255,255,0.05)" stroke-width="1" rx="8"/>
+                                        <rect width="800" height="500" fill="rgba(255,255,255,0.02)" stroke="rgba(255,255,255,0.05)" stroke-width="1" rx="8"/>
                                         
                                         <!-- Labels for views -->
-                                        <text x="150" y="25" class="svg-label">TOP VIEW</text>
-                                        <text x="450" y="25" class="svg-label">SIDE VIEW (LEFT)</text>
-                                        <text x="150" y="335" class="svg-label">FRONT</text>
-                                        <text x="450" y="335" class="svg-label">REAR</text>
+                                        <text x="170" y="40" class="svg-label">TOP VIEW</text>
+                                        <text x="375" y="40" class="svg-label">FRONT</text>
+                                        <text x="375" y="260" class="svg-label">REAR</text>
+                                        <text x="627" y="40" class="svg-label">SIDE VIEW (LEFT)</text>
+                                        <text x="627" y="260" class="svg-label">SIDE VIEW (RIGHT)</text>
 
                                         <g id="svg-drawings" stroke="rgba(255, 255, 255, 0.4)" stroke-width="2" fill="none">
                                             <!-- TOP VIEW CAR -->
-                                            <g transform="translate(50, 40)">
+                                            <g transform="translate(40, 80) scale(1.3)">
                                                 <!-- Car body main shape -->
                                                 <path d="M 60,30 C 60,10 70,5 100,5 C 130,5 140,10 140,30 L 145,90 C 145,115 140,200 140,210 C 140,230 130,235 100,235 C 70,235 60,230 60,210 C 60,200 55,115 55,90 Z" />
                                                 <!-- Windshield & Rear glass -->
@@ -418,24 +419,8 @@
                                                 <path d="M 75,235 L 75,208 L 125,208 L 125,235" />
                                             </g>
 
-                                            <!-- SIDE VIEW CAR -->
-                                            <g transform="translate(320, 90)">
-                                                <!-- Ground line -->
-                                                <line x1="0" y1="120" x2="250" y2="120" stroke="rgba(255,255,255,0.2)" stroke-dasharray="4,4"/>
-                                                <!-- Car silhouette -->
-                                                <path d="M 10,105 L 20,80 C 35,65 50,55 80,45 C 100,25 130,22 170,22 C 200,22 225,45 235,70 L 245,100 C 248,105 245,115 235,115 L 210,115 C 205,100 185,100 180,115 L 70,115 C 65,100 45,100 40,115 L 10,115 Z" />
-                                                <!-- Windows -->
-                                                <path d="M 85,50 L 125,32 L 125,75 L 85,75 Z" />
-                                                <path d="M 130,32 L 175,32 L 200,65 L 175,75 L 130,75 Z" />
-                                                <!-- Wheels -->
-                                                <circle cx="55" cy="115" r="18" stroke-width="2"/>
-                                                <circle cx="55" cy="115" r="8" fill="rgba(255,255,255,0.2)"/>
-                                                <circle cx="195" cy="115" r="18" stroke-width="2"/>
-                                                <circle cx="195" cy="115" r="8" fill="rgba(255,255,255,0.2)"/>
-                                            </g>
-                                            
                                             <!-- FRONT VIEW -->
-                                            <g transform="translate(70, 260)">
+                                            <g transform="translate(285, 75) scale(1.5)">
                                                 <path d="M 10,40 C 10,35 15,30 20,25 C 25,10 45,5 60,5 C 75,5 95,10 100,25 C 105,30 110,35 110,40 L 110,55 C 110,60 105,62 100,62 L 20,62 C 15,62 10,60 10,55 Z" />
                                                 <!-- Windshield -->
                                                 <path d="M 22,25 L 98,25 C 90,12 80,10 60,10 C 40,10 30,12 22,25 Z" />
@@ -452,7 +437,7 @@
                                             </g>
 
                                             <!-- REAR VIEW -->
-                                            <g transform="translate(420, 260)">
+                                            <g transform="translate(285, 290) scale(1.5)">
                                                 <path d="M 10,40 C 10,35 15,30 20,25 C 25,10 45,5 60,5 C 75,5 95,10 100,25 C 105,30 110,35 110,40 L 110,55 C 110,60 105,62 100,62 L 20,62 C 15,62 10,60 10,55 Z" />
                                                 <!-- Rear Windshield -->
                                                 <path d="M 22,25 L 98,25 C 92,15 80,12 60,12 C 40,12 28,15 22,25 Z" />
@@ -461,6 +446,40 @@
                                                 <path d="M 95,32 H 82 V 40 H 95 Z" />
                                                 <!-- License plate holder -->
                                                 <rect x="42" y="36" width="36" height="12" rx="2"/>
+                                            </g>
+
+                                            <!-- SIDE VIEW (LEFT) -->
+                                            <g transform="translate(490, 65) scale(1.1)">
+                                                <!-- Ground line -->
+                                                <line x1="0" y1="120" x2="250" y2="120" stroke="rgba(255,255,255,0.2)" stroke-dasharray="4,4"/>
+                                                <!-- Car silhouette -->
+                                                <path d="M 10,105 L 20,80 C 35,65 50,55 80,45 C 100,25 130,22 170,22 C 200,22 225,45 235,70 L 245,100 C 248,105 245,115 235,115 L 210,115 C 205,100 185,100 180,115 L 70,115 C 65,100 45,100 40,115 L 10,115 Z" />
+                                                <!-- Windows -->
+                                                <path d="M 85,50 L 125,32 L 125,75 L 85,75 Z" />
+                                                <path d="M 130,32 L 175,32 L 200,65 L 175,75 L 130,75 Z" />
+                                                <!-- Wheels -->
+                                                <circle cx="55" cy="115" r="18" stroke-width="2"/>
+                                                <circle cx="55" cy="115" r="8" fill="rgba(255,255,255,0.2)"/>
+                                                <circle cx="195" cy="115" r="18" stroke-width="2"/>
+                                                <circle cx="195" cy="115" r="8" fill="rgba(255,255,255,0.2)"/>
+                                            </g>
+                                            
+                                            <!-- SIDE VIEW (RIGHT) -->
+                                            <g transform="translate(490, 275) scale(1.1)">
+                                                <g transform="translate(250, 0) scale(-1, 1)">
+                                                    <!-- Ground line -->
+                                                    <line x1="0" y1="120" x2="250" y2="120" stroke="rgba(255,255,255,0.2)" stroke-dasharray="4,4"/>
+                                                    <!-- Car silhouette -->
+                                                    <path d="M 10,105 L 20,80 C 35,65 50,55 80,45 C 100,25 130,22 170,22 C 200,22 225,45 235,70 L 245,100 C 248,105 245,115 235,115 L 210,115 C 205,100 185,100 180,115 L 70,115 C 65,100 45,100 40,115 L 10,115 Z" />
+                                                    <!-- Windows -->
+                                                    <path d="M 85,50 L 125,32 L 125,75 L 85,75 Z" />
+                                                    <path d="M 130,32 L 175,32 L 200,65 L 175,75 L 130,75 Z" />
+                                                    <!-- Wheels -->
+                                                    <circle cx="55" cy="115" r="18" stroke-width="2"/>
+                                                    <circle cx="55" cy="115" r="8" fill="rgba(255,255,255,0.2)"/>
+                                                    <circle cx="195" cy="115" r="18" stroke-width="2"/>
+                                                    <circle cx="195" cy="115" r="8" fill="rgba(255,255,255,0.2)"/>
+                                                </g>
                                             </g>
                                         </g>
 

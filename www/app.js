@@ -1348,8 +1348,8 @@ function renderDamageMarkers() {
         const group = document.createElementNS("http://www.w3.org/2000/svg", "g");
         
         const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-        const cx = (point.x / 100) * 600;
-        const cy = (point.y / 100) * 350;
+        const cx = (point.x / 100) * 800;
+        const cy = (point.y / 100) * 500;
 
         circle.setAttribute("cx", cx);
         circle.setAttribute("cy", cy);
